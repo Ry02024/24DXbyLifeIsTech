@@ -42,9 +42,8 @@ def apply_and_load_label_encoding(df, filepath):
     classes = []
     with open(filepath, 'r', encoding='utf-8') as f:
         for line in f:
-            category, _ = line.strip().split(': ')
-            classes.append(category)
-    
+            classes.append(line.strip())  # 改行や余分な空白を削除してカテゴリを追加
+
     # 2. LabelEncoderを作成して、クラス情報を設定
     le = LabelEncoder()
     le.classes_ = np.array(classes)
@@ -52,7 +51,7 @@ def apply_and_load_label_encoding(df, filepath):
     # 3. 商品カテゴリにラベルエンコーディングを適用
     df['商品カテゴリ'] = le.transform(df['商品カテゴリ'])
 
-    # 4. エンコードされたデータフレームとエンコーダーを返す
+    # 4. エンコードされたデータフレームを返す
     return df, le
 
 def plot_sales_comparison(total_actual_sales, total_predicted_sales):
