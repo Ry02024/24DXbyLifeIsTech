@@ -1,3 +1,4 @@
+%%writefile scenario_simulation.py
 import pandas as pd
 import yaml
 from sklearn.preprocessing import LabelEncoder
@@ -76,6 +77,33 @@ def plot_category_sales_comparison(df):
     plt.tight_layout()
     plt.show()
 
+def plot_category_num_comparison(df):
+    """
+    商品カテゴリごとの予測数量と数量を比較する棒グラフを作成する関数。
+    
+    Parameters:
+        df (pd.DataFrame): データフレーム。
+    
+    Returns:
+        None
+    """
+    category_sales_actual = df.groupby('商品カテゴリ')['数量'].sum()
+    category_sales_predicted = df.groupby('商品カテゴリ')['予測数量'].sum()
+
+    plt.figure(figsize=(12, 6))
+    category_labels = category_sales_actual.index
+
+    plt.bar(category_labels, category_sales_actual, width=0.4, label='数量', align='center', color='green')
+    plt.bar(category_labels, category_sales_predicted, width=0.4, label='予測数量', align='edge', color='blue')
+
+    plt.title('商品カテゴリごとの数量と予測数量の比較')
+    plt.xlabel('商品カテゴリ')
+    plt.ylabel('数量')
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 def sim(scenario_df, filepath, model, selected_columns):
     """
@@ -99,7 +127,8 @@ def sim(scenario_df, filepath, model, selected_columns):
     # --- 3. 予測の実行 ---
     y_pred = model.predict(scenario_df[selected_columns], num_iteration=model.best_iteration)
     # --- 4. 売上の計算 ---
-    scenario_df['売上予測'] = y_pred * scenario_df['商品単価']
+    scenario_df['予測数量'] = y_pred
+    scenario_df['売上予測'] = y_pred * scenario_df['シミュレーション後の商品単価']
     scenario_df['実売上'] = scenario_df['売上']
     # --- 5. 商品カテゴリをデコード ---
     scenario_df['商品カテゴリ'] = le.inverse_transform(scenario_df['商品カテゴリ'])
@@ -117,3 +146,8 @@ def sim(scenario_df, filepath, model, selected_columns):
     
     # --- 9. 商品カテゴリごとの売上比較のグラフ表示 ---
     plot_category_sales_comparison(scenario_df)
+
+    # --- 10. 商品カテゴリごとの売上比較のグラフ表示 ---
+    plot_category_num_comparison(scenario_df)
+
+    return scenario_df
