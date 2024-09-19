@@ -1,4 +1,3 @@
-%%writefile scenario_simulation.py
 import pandas as pd
 import yaml
 from sklearn.preprocessing import LabelEncoder
