@@ -4,6 +4,39 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import matplotlib.pyplot as plt
 
+def price_adjustment_simulation(df, price_increase, target_categories, adjustment_time_period):
+    """
+    指定したカテゴリと時間帯で価格を調整し、調整前後の価格および売上をシミュレーションする関数。
+
+    Parameters:
+    df: データフレーム（商品カテゴリ、時間帯、商品単価、数量、売上を含む）
+    price_increase: 価格調整の割合（例：1.1は10%の値上げ、0.9は10%の値下げ）
+    target_categories: 価格調整対象のカテゴリのリスト
+    adjustment_time_period: 調整対象の時間帯のリスト（例：['17:00:00', '18:00:00']）
+
+    Returns:
+    scenario_df: 調整前後の価格と売上を含むデータフレーム
+    """
+
+    # データをコピーしてシミュレーション用のデータフレームを作成
+    scenario_df = df.copy()
+
+    # 元の価格を保存
+    scenario_df['元の価格'] = scenario_df['商品単価']
+
+    # 対象となるカテゴリと時間帯で価格を調整する
+    scenario_df['シナリオの商品単価'] = scenario_df.apply(
+        lambda row: row['商品単価'] * price_increase
+        if (row['商品カテゴリ'] in target_categories and row['時間帯'] in adjustment_time_period)
+        else row['商品単価'],
+        axis=1
+    )
+
+    # 元の売上を計算
+    scenario_df['元の売上'] = scenario_df['数量'] * scenario_df['元の価格']
+
+    return scenario_df
+    
 def apply_and_load_label_encoding(df, filepath):
     """
     YAMLファイルからラベルエンコーディング情報を取得し、商品カテゴリに適用する関数。
