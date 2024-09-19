@@ -38,26 +38,22 @@ def price_adjustment_simulation(df, price_increase, target_categories, adjustmen
     return scenario_df
     
 def apply_and_load_label_encoding(df, filepath):
-    """
-    YAMLファイルからラベルエンコーディング情報を取得し、商品カテゴリに適用する関数。
+    # 1. テキストファイルからカテゴリ情報を読み込む
+    classes = []
+    with open(filepath, 'r', encoding='utf-8') as f:
+        for line in f:
+            category, _ = line.strip().split(': ')
+            classes.append(category)
     
-    Parameters:
-        df (pd.DataFrame): データフレーム。
-        filepath (str): YAMLファイルへのパス。
-    
-    Returns:
-        pd.DataFrame, LabelEncoder: ラベルエンコーディングが適用されたデータフレームとLabelEncoderオブジェクト。
-    """
-    with open(filepath, 'r') as file:
-        config = yaml.safe_load(file)
-
-    label_encoder_info = config['label_encoding']
+    # 2. LabelEncoderを作成して、クラス情報を設定
     le = LabelEncoder()
-    le.classes_ = np.array(label_encoder_info['商品カテゴリ'])  # ラベルエンコーディングを設定
+    le.classes_ = np.array(classes)
 
-    df['商品カテゴリ'] = le.transform(df['商品カテゴリ'])  # 商品カテゴリにラベルエンコーディングを適用
+    # 3. 商品カテゴリにラベルエンコーディングを適用
+    df['商品カテゴリ'] = le.transform(df['商品カテゴリ'])
+
+    # 4. エンコードされたデータフレームとエンコーダーを返す
     return df, le
-
 
 def plot_sales_comparison(total_actual_sales, total_predicted_sales):
     """
