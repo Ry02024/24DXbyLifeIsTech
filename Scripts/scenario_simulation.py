@@ -127,7 +127,7 @@ def sim(scenario_df, filepath, model, selected_columns):
     y_pred = model.predict(scenario_df[selected_columns], num_iteration=model.best_iteration)
     # --- 4. 売上の計算 ---
     scenario_df['予測数量'] = y_pred
-    scenario_df['売上予測'] = y_pred * scenario_df['シミュレーション後の商品単価']
+    scenario_df['売上予測'] = y_pred * scenario_df['シナリオの商品単価']
     scenario_df['実売上'] = scenario_df['売上']
     # --- 5. 商品カテゴリをデコード ---
     scenario_df['商品カテゴリ'] = le.inverse_transform(scenario_df['商品カテゴリ'])
