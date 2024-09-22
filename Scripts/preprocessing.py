@@ -23,12 +23,6 @@ def normalize_age(age):
     else:
         return 'その他'
 
-# 取引日時から時間帯を抽出する関数
-def extract_time_band(df, datetime_column, new_column='時間帯'):
-    """
-    データフレームの指定された日時列から時間帯を抽出し、新しい列に追加
-
-
 # 年齢の正規化関数に NaN の処理を追加
 def normalize_age(age):
     if pd.isna(age):
