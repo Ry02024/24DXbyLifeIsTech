@@ -39,3 +39,15 @@ def extract_time_band(df, datetime_column, new_column='時間帯'):
     df[new_column] = df[datetime_column].dt.floor('H')
 
     return df
+
+def date_data_preprocessing(df):
+    # --- '取引日時' 列を基に '年', '月', '日', '時間' の新しい列を作成 ---
+    df['取引日時'] = pd.to_datetime(df['取引日時'])
+    df['年'] = df['取引日時'].dt.year
+    df['月'] = df['取引日時'].dt.month
+    df['日'] = df['取引日時'].dt.day
+    df['時間'] = df['取引日時'].dt.hour
+    df['日付'] = pd.to_datetime(df['日付'])
+    df.set_index('日付', inplace=True)
+    df.drop('取引日時', axis=1, inplace=True)
+    return df
