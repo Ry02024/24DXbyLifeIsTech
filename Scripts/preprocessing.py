@@ -16,7 +16,7 @@ def normalize_age(age):
         return '40代'
     elif '50代' in age:
         return '50代'
-    elif '60代'に age:
+    elif '60代' in age:
         return '60代'
     elif '70代' in age or '70代以上' in age:
         return '70代以上'
